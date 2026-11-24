@@ -2,6 +2,7 @@ package cosmogen.graphics;
 
 import static org.lwjgl.opengl.GL20.*;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
@@ -97,6 +98,22 @@ public class Shader {
             try (MemoryStack stack = MemoryStack.stackPush()) {
                 glUniformMatrix4fv(location, false, matrix.get(stack.mallocFloat(16)));
             }
+        }
+    }
+
+    public void setUniformFloat(String name, float value) {
+        int location = glGetUniformLocation(programId, name);
+
+        if (location != -1) {
+            glUniform1f(location, value);
+        }
+    }
+
+    public void setUniformVec3(String name, Vector3f value) {
+        int location = glGetUniformLocation(programId, name);
+
+        if (location != -1) {
+            glUniform3f(location, value.x, value.y, value.z);
         }
     }
 }

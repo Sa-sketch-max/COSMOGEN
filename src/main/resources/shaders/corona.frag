@@ -13,23 +13,25 @@ void main() {
     vec3 N = normalize(vNormal);
     vec3 V = normalize(cameraPos - vWorldPos);
 
-    float fresnel = pow(
-        1.0 - abs(dot(N, V)),
-        3.0
-    );
+    float rim = 1.0 - abs(dot(N, V));
+    rim = clamp(rim, 0.0, 1.0);
 
-    float pulse = 0.9 + 0.1 * sin(time * 2.0);
+    // Concentrate light near the silhouette
+    float glow = pow(rim, 4.0);
 
-    vec3 innerColor = vec3(1.0, 0.65, 0.12);
-    vec3 outerColor = vec3(1.0, 0.18, 0.02);
+    // Gentle animation
+    float pulse = 0.9 + 0.1 * sin(time * 1.5);
 
     vec3 color = mix(
-        innerColor,
-        outerColor,
-        fresnel
+            vec3(0.08, 0.3, 1.0),
+            vec3(0.5, 0.85, 1.0),
+            rim
     );
 
-    float alpha = fresnel * 0.65 * pulse;
+    float alpha = glow * 0.35 * pulse;
 
-    FragColor = vec4(color * 1.8, alpha);
+    FragColor = vec4(color, alpha);
 }
+
+
+
